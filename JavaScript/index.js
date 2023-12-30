@@ -1,3 +1,20 @@
+const searchInput = document.getElementById('searchInput');
+const resultList = document.getElementById('resultList');
+
+const criptoYa = "https://criptoya.com/api/dolar";
+
+const divDolar = document.getElementById("Blue");
+
+fetch(criptoYa)
+    .then(response => response.json())
+    .then(({blue})=>{
+        divDolar.innerHTML = `
+        <h3>El blue esta en:${blue}</h3>
+        `
+    })
+    .catch(error => console.log(error))
+
+// Datos de ejemplo para la búsqueda (pueden provenir de una API)
 class Producto{
     constructor(id,nombre, precio, img){
         this.id = id;
@@ -8,24 +25,15 @@ class Producto{
     }
 }
 
-const GPU= new Producto(1,"gpu",3000," ");
-const MOTHER = new Producto(2,"mother",2500," ");
-
-//array que recibe productos
+const GPU= new Producto(1,"gpu",30," ");
+const MOTHER = new Producto(2,"mother",25," ");
 
 const PRODUCTOS = [GPU, MOTHER]; 
-
-//array de carrito
-
 let carrito = [];
 
 console.log(PRODUCTOS)
 
-//modificar dom
-
 const CONTENEDOR_PRODUCTOS = document.getElementById("contenedorProductos");
-
-//muestra productos en stock
 
 const MOSTRAR_PRODUCTOS = () =>{
     //ITERAMOS SOBRE UN FOREACH
@@ -39,7 +47,7 @@ const MOSTRAR_PRODUCTOS = () =>{
                 <img src="${producto.img}" class="card-img-tom imgProducto" />
                 <div class="card-body">
                     <h2>${producto.nombre}</h2>
-                    <p>${producto.precio}</p>
+                    <p>valor en USD ${producto.precio}</p>
                     <div id="rating-container">
                         <span onclick="calificar(1)">☆</span>            
                         <span onclick="calificar(2)">☆</span>        
@@ -65,8 +73,6 @@ const MOSTRAR_PRODUCTOS = () =>{
 
 MOSTRAR_PRODUCTOS();
 
-//agregar al carrito
-
 const agregarAlCarrito = (id) =>{
     const productoEnCarrito = carrito.find(producto => producto.id === id);
     if(productoEnCarrito){
@@ -78,8 +84,6 @@ const agregarAlCarrito = (id) =>{
 
     console.log(carrito);
 }
-
-//conentedor carrito
 
 const contenedorCarrito = document.getElementById("contenedorCarrito");
 const verCarrito = document.getElementById("verCarrito");
@@ -108,8 +112,6 @@ const mostrarCarrito = () =>{
             </div>
         `
         contenedorCarrito.appendChild(card);
-        
-        //eliminar el productoeliminar
         const boton = document.getElementById(`eliminar${producto.id}`);
         boton.addEventListener("click",()=>{
             eliminarDelCarrito(producto.id)
@@ -144,3 +146,33 @@ botonModo.addEventListener("click", ()=>{
         localStorage.setItem("modo", "claro");
     }
 });
+
+const datos = ['GPU', 'MOTHER'];
+// Función para realizar la búsqueda
+function buscar() {
+  // Obtén el valor del campo de búsqueda
+  const searchTerm = searchInput.value.toLowerCase();
+
+  
+  // Filtra los datos según el término de búsqueda
+  const resultados = datos.filter(item => item.toLowerCase().includes(searchTerm));
+
+  // Muestra los resultados en el DOM
+  mostrarResultados(resultados);
+}
+
+// Función para mostrar los resultados en el DOM
+function mostrarResultados(resultados) {
+  // Borra los resultados anteriores
+  resultList.innerHTML = '';
+
+  // Crea elementos de lista para cada resultado y añádelos al DOM
+  resultados.forEach(resultado => {
+    const li = document.createElement('li');
+    li.textContent = resultado;
+    resultList.appendChild(li);
+  });
+}
+
+// Escucha eventos de entrada en el campo de búsqueda
+searchInput.addEventListener('input', buscar);
